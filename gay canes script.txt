@@ -1,1 +1,1696 @@
+-- Deobfuscated by darkness (darkness)
 
+
+local v1 = loadstring(game:HttpGet("https://raw.githubusercontent.com/memejames/elerium-v2-ui-library//main/Library", true))():AddWindow("darkness Priv Script\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189", {
+    main_color = Color3.fromRGB(49, 1, 95),
+    min_size = Vector2.new(600, 600),
+    can_resize = false
+})
+local vu2 = game:GetService("ReplicatedStorage")
+local vu3 = {
+    "strengthFrame",
+    "durabilityFrame",
+    "agilityFrame"
+}
+local v4, v5, v6 = ipairs(vu3)
+while true do
+    local v7, v8 = v4(v5, v6)
+    if v7 == nil then
+        break
+    end
+    v6 = v7
+    local v9 = vu2:FindFirstChild(v8)
+    if v9 and v9:IsA("GuiObject") then
+        v9.Visible = false
+    end
+end
+vu2.ChildAdded:Connect(function(p10)
+    if table.find(vu3, p10.Name) and p10:IsA("GuiObject") then
+        p10.Visible = false
+    end
+end)
+local vu11 = v1:AddTab("Main")
+local v12 = vu11
+vu11.Show(v12)
+local v13 = vu11
+vu11.AddLabel(v13, "Settings").TextSize = 20
+local vu14 = game:GetService("Players")
+local vu15 = game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote
+local vu16 = 2
+local vu17 = false
+local v18 = vu11
+vu11.AddTextBox(v18, "Size", function(p19)
+    local v20 = tonumber(p19:match("%d+"))
+    if v20 then
+        vu16 = v20
+    end
+end)
+local v21 = vu11
+vu11.AddSwitch(v21, "Set Size", function(p22)
+    vu17 = p22
+end):Set(false)
+task.spawn(function()
+    while true do
+        if vu17 then
+            local v23 = vu14.LocalPlayer.Character
+            if v23 and v23:FindFirstChildOfClass("Humanoid") then
+                vu15:InvokeServer("changeSize", vu16)
+            end
+        end
+        task.wait(0.5)
+    end
+end)
+local vu24 = 120
+local vu25 = false
+local v26 = vu11
+vu11.AddTextBox(v26, "Speed", function(p27)
+    local v28 = tonumber(p27:match("%d+"))
+    if v28 then
+        vu24 = v28
+    end
+end)
+local v29 = vu11
+vu11.AddSwitch(v29, "Set Speed", function(p30)
+    vu25 = p30
+end):Set(false)
+task.spawn(function()
+    while true do
+        if vu25 then
+            local v31 = vu14.LocalPlayer.Character
+            if v31 and v31:FindFirstChildOfClass("Humanoid") then
+                vu15:InvokeServer("changeSpeed", vu24)
+            end
+        end
+        task.wait(0.5)
+    end
+end)
+local v32 = vu11
+vu11.AddLabel(v32, "Misc").TextSize = 20
+local v33 = vu11
+vu11.AddSwitch(v33, "Show Pets", function(p34)
+    local v35 = vu14.LocalPlayer
+    if v35:FindFirstChild("hidePets") then
+        v35.hidePets.Value = p34
+    end
+end):Set(false)
+local vu36 = game:GetService("VirtualUser")
+local vu37 = nil
+local function vu38()
+    if not vu37 then
+        vu37 = vu14.LocalPlayer.Idled:Connect(function()
+            vu36:CaptureController()
+            vu36:ClickButton2(Vector2.new())
+        end)
+    end
+end
+local function vu39()
+    if vu37 then
+        vu37:Disconnect()
+        vu37 = nil
+    end
+end
+local v40 = vu11
+vu11.AddSwitch(v40, "Anti AFK", function(p41)
+    if p41 then
+        vu38()
+    else
+        vu39()
+    end
+end):Set(true)
+local v42 = vu11
+vu11.AddSwitch(v42, "Anti Fling", function(p43)
+    local v44 = workspace:FindFirstChild(vu14.LocalPlayer.Name)
+    local v45 = v44 and v44:FindFirstChild("HumanoidRootPart")
+    if v45 then
+        if p43 then
+            local v46 = Instance.new("BodyVelocity")
+            v46.MaxForce = Vector3.new(100000, 0, 100000)
+            v46.Velocity = Vector3.new(0, 0, 0)
+            v46.P = 1250
+            v46.Name = "AntiFling"
+            v46.Parent = v45
+        else
+            local v47 = v45:FindFirstChild("AntiFling")
+            if v47 then
+                v47:Destroy()
+            end
+        end
+    end
+end)
+v1:AddTab("Specs"):AddLabel("Player:").TextSize = 20
+local function vu52(p48)
+    local v49 = {
+        "K",
+        "M",
+        "B",
+        "T",
+        "Qa"
+    }
+    for v50 = # v49, 1, - 1 do
+        local v51 = 10 ^ (v50 * 3)
+        if v51 <= p48 then
+            return string.format("%.2f%s", p48 / v51, v49[v50])
+        end
+    end
+    return string.format("%.2f", p48)
+end
+local vu53 = {}
+local vu54 = nil
+local vu55 = false
+local function vu70(pu56)
+    local v57, v58, v59 = pairs(vu53)
+    while true do
+        local v60
+        v59, v60 = v57(v58, v59)
+        if v59 == nil then
+            break
+        end
+        v60:Remove()
+    end
+    vu53 = {}
+    vu54 = pu56
+    if pu56 then
+        local v61 = pu56:WaitForChild("leaderstats")
+        local vu62 = v61:WaitForChild("Strength")
+        local vu63 = v61:WaitForChild("Rebirths")
+        local vu64 = pu56:WaitForChild("Durability")
+        local vu65 = v61:WaitForChild("Kills")
+        local vu66 = pu56:WaitForChild("Agility")
+        local vu67 = pu56:WaitForChild("evilKarma")
+        local vu68 = pu56:WaitForChild("goodKarma")
+        local vu69 = v61:WaitForChild("Brawls")
+        vu53.strengthLabel = vu11:AddLabel("\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189Strength: " .. vu52(vu62.Value))
+        vu53.rebirthsLabel = vu11:AddLabel("\239\191\189\239\191\189\239\184\143Rebirths: " .. vu52(vu63.Value))
+        vu53.durabilityLabel = vu11:AddLabel("\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189\239\184\143Durability: " .. vu52(vu64.Value))
+        vu53.killsLabel = vu11:AddLabel("\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189Kills: " .. vu52(vu65.Value))
+        vu53.agilityLabel = vu11:AddLabel("\239\191\189\239\191\189Agility: " .. vu52(vu66.Value))
+        vu53.evilKarmaLabel = vu11:AddLabel("\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189Evil Karma: " .. vu52(vu67.Value))
+        vu53.goodKarmaLabel = vu11:AddLabel("\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189Good Karma: " .. vu52(vu68.Value))
+        vu53.brawlsLabel = vu11:AddLabel("\239\191\189\239\191\189\239\184\143Brawls: " .. vu52(vu69.Value))
+        spawn(function()
+            while pu56 and pu56.Parent do
+                wait(1)
+                vu53.strengthLabel:SetText("\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189Strength: " .. vu52(vu62.Value))
+                vu53.rebirthsLabel:SetText("\239\191\189\239\191\189\239\184\143Rebirths: " .. vu52(vu63.Value))
+                vu53.durabilityLabel:SetText("\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189\239\184\143Durability: " .. vu52(vu64.Value))
+                vu53.killsLabel:SetText("\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189Kills: " .. vu52(vu65.Value))
+                vu53.agilityLabel:SetText("\239\191\189\239\191\189Agility: " .. vu52(vu66.Value))
+                vu53.evilKarmaLabel:SetText("\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189Evil Karma: " .. vu52(vu67.Value))
+                vu53.goodKarmaLabel:SetText("\239\191\189\239\191\189\239\191\189\239\191\189\239\191\189Good Karma: " .. vu52(vu68.Value))
+                vu53.brawlsLabel:SetText("\239\191\189\239\191\189\239\184\143Brawls: " .. vu52(vu69.Value))
+            end
+        end)
+    end
+end
+local function vu71()
+    return game:GetService("Players"):GetPlayers()
+end
+local v72 = vu11
+local vu80 = vu11.AddDropdown(v72, "Choose Player", function(p73)
+    local v74 = vu71()
+    local v75, v76, v77 = ipairs(v74)
+    local v78 = nil
+    while true do
+        local v79
+        v77, v79 = v75(v76, v77)
+        if v77 == nil then
+            v79 = v78
+            break
+        end
+        if p73 == v79.DisplayName .. " | " .. v79.Name then
+            break
+        end
+    end
+    vu70(v79)
+end)
+local v81, v82, v83 = ipairs(vu71())
+local vu84 = vu15
+local vu85 = vu17
+local v86 = vu11
+local vu87 = vu55
+local vu88 = vu54
+while true do
+    local v89
+    v83, v89 = v81(v82, v83)
+    if v83 == nil then
+        break
+    end
+    vu80:Add(v89.DisplayName .. " | " .. v89.Name)
+end
+game:GetService("Players").PlayerAdded:Connect(function(p90)
+    vu80:Add(p90.DisplayName .. " | " .. p90.Name)
+end)
+game:GetService("Players").PlayerRemoving:Connect(function(p91)
+    vu80:Remove(p91.DisplayName .. " | " .. p91.Name)
+    local _ = p91 ~= vu88
+end)
+v86:AddSwitch("Spectate Player", function(_)
+end):Set(false)
+v86:AddLabel("")
+v86:AddLabel("Player Stats:").TextSize = 20
+local v92 = v1:AddTab("Killer")
+local function vu93()
+    if not game.Players.LocalPlayer.Character then
+        repeat
+            task.wait()
+        until game.Players.LocalPlayer.Character
+    end
+    return game.Players.LocalPlayer.Character
+end
+local function vu98()
+    local v94, v95, v96 = pairs(game.Players.LocalPlayer.Backpack:GetChildren())
+    while true do
+        local v97
+        v96, v97 = v94(v95, v96)
+        if v96 == nil then
+            break
+        end
+        if v97.Name == "Punch" and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+            game.Players.LocalPlayer.Character.Humanoid:EquipTool(v97)
+        end
+    end
+    game.Players.LocalPlayer.muscleEvent:FireServer("punch", "leftHand")
+    game.Players.LocalPlayer.muscleEvent:FireServer("punch", "rightHand")
+end
+local function vu101(p99)
+    local v100 = p99 and p99.Character and (p99.Character:FindFirstChild("HumanoidRootPart") and p99.Character:FindFirstChild("Humanoid"))
+    if v100 then
+        v100 = p99.Character.Humanoid.Health > 0
+    end
+    return v100
+end
+local function vu104(pu102)
+    if vu101(pu102) then
+        local vu103 = vu93()
+        if vu103 and vu103:FindFirstChild("LeftHand") then
+            pcall(function()
+                firetouchinterest(pu102.Character.HumanoidRootPart, vu103.LeftHand, 0)
+                firetouchinterest(pu102.Character.HumanoidRootPart, vu103.LeftHand, 1)
+                vu98()
+            end)
+        end
+    end
+end
+v92:AddLabel("Misc").TextSize = 20
+local v121 = v92:AddDropdown("Select Pet", function(p105)
+    local v106 = game.Players.LocalPlayer.petsFolder
+    local v107, v108, v109 = pairs(v106:GetChildren())
+    while true do
+        local v110
+        v109, v110 = v107(v108, v109)
+        if v109 == nil then
+            break
+        end
+        if v110:IsA("Folder") then
+            local v111, v112, v113 = pairs(v110:GetChildren())
+            while true do
+                local v114
+                v113, v114 = v111(v112, v113)
+                if v113 == nil then
+                    break
+                end
+                game:GetService("ReplicatedStorage").rEvents.equipPetEvent:FireServer("unequipPet", v114)
+            end
+        end
+    end
+    task.wait(0.2)
+    local v115, v116, v117 = pairs(game.Players.LocalPlayer.petsFolder.Unique:GetChildren())
+    local v118 = {}
+    while true do
+        local v119
+        v117, v119 = v115(v116, v117)
+        if v117 == nil then
+            break
+        end
+        if v119.Name == p105 then
+            table.insert(v118, v119)
+        end
+    end
+    for v120 = 1, math.min(8, # v118) do
+        game:GetService("ReplicatedStorage").rEvents.equipPetEvent:FireServer("equipPet", v118[v120])
+        task.wait(0.1)
+    end
+end)
+v121:Add("Wild Wizard")
+v121:Add("Mighty Monster")
+v92:AddButton("Remove Attack Animations", function()
+    local vu122 = {
+        ["rbxassetid://3638729053"] = true,
+        ["rbxassetid://3638767427"] = true
+    };
+    (function()
+        local v123 = game.Players.LocalPlayer.Character
+        if v123 and v123:FindFirstChild("Humanoid") then
+            local v124 = v123:FindFirstChild("Humanoid")
+            local v125, v126, v127 = pairs(v124:GetPlayingAnimationTracks())
+            while true do
+                local v128
+                v127, v128 = v125(v126, v127)
+                if v127 == nil then
+                    break
+                end
+                if v128.Animation then
+                    local v129 = v128.Animation.AnimationId
+                    local v130 = v128.Name:lower()
+                    if vu122[v129] or (v130:match("punch") or (v130:match("attack") or v130:match("right"))) then
+                        v128:Stop()
+                    end
+                end
+            end
+            if not _G.AnimBlockConnection then
+                local v134 = v124.AnimationPlayed:Connect(function(p131)
+                    if p131.Animation then
+                        local v132 = p131.Animation.AnimationId
+                        local v133 = p131.Name:lower()
+                        if vu122[v132] or (v133:match("punch") or (v133:match("attack") or v133:match("right"))) then
+                            p131:Stop()
+                        end
+                    end
+                end)
+                _G.AnimBlockConnection = v134
+            end
+        end
+    end)()
+end)
+v92:AddLabel("")
+v92:AddLabel("Auto Kill").TextSize = 20
+_G.whitelistedPlayers = _G.whitelistedPlayers or {}
+_G.blacklistedPlayers = _G.blacklistedPlayers or {}
+local function vu140(p135)
+    local v136, v137, v138 = ipairs(_G.whitelistedPlayers)
+    while true do
+        local v139
+        v138, v139 = v136(v137, v138)
+        if v138 == nil then
+            break
+        end
+        if v139:lower() == p135.Name:lower() then
+            return true
+        end
+    end
+    return false
+end
+local vu148 = v92:AddDropdown("Whitelist", function(p141)
+    local v142 = p141:match("| (.+)$")
+    if v142 then
+        local v143 = v142:gsub("^%s*(.-)%s*$", "%1")
+        local v144, v145, v146 = ipairs(_G.whitelistedPlayers)
+        while true do
+            local v147
+            v146, v147 = v144(v145, v146)
+            if v146 == nil then
+                break
+            end
+            if v147:lower() == v143:lower() then
+                return
+            end
+        end
+        table.insert(_G.whitelistedPlayers, v143)
+    end
+end)
+v92:AddSwitch("Kill Everyone", function(p149)
+    _G.killAll = p149
+    if p149 then
+        if not _G.killAllConnection then
+            _G.killAllConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                if _G.killAll then
+                    local v150, v151, v152 = ipairs(game:GetService("Players"):GetPlayers())
+                    while true do
+                        local v153
+                        v152, v153 = v150(v151, v152)
+                        if v152 == nil then
+                            break
+                        end
+                        if v153 ~= game.Players.LocalPlayer and not vu140(v153) then
+                            vu104(v153)
+                        end
+                    end
+                end
+            end)
+        end
+    elseif _G.killAllConnection then
+        _G.killAllConnection:Disconnect()
+        _G.killAllConnection = nil
+    end
+end):Set(false)
+v92:AddSwitch("Whitelist Friends", function(p154)
+    _G.whitelistFriends = p154
+    if p154 then
+        local v155, v156, v157 = pairs(game.Players:GetPlayers())
+        while true do
+            local v158
+            v157, v158 = v155(v156, v157)
+            if v157 == nil then
+                break
+            end
+            if v158 ~= game.Players.LocalPlayer and v158:IsFriendsWith(game.Players.LocalPlayer.UserId) then
+                local v159 = v158.Name
+                local v160, v161, v162 = ipairs(_G.whitelistedPlayers)
+                local v163 = false
+                while true do
+                    local v164
+                    v162, v164 = v160(v161, v162)
+                    if v162 == nil then
+                        break
+                    end
+                    if v164:lower() == v159:lower() then
+                        v163 = true
+                        break
+                    end
+                end
+                if not v163 then
+                    table.insert(_G.whitelistedPlayers, v159)
+                end
+            end
+        end
+    end
+end):Set(false)
+v92:AddLabel("")
+v92:AddLabel("Kill Targets").TextSize = 20
+local vu172 = v92:AddDropdown("Blacklist", function(p165)
+    local v166 = p165:match("| (.+)$")
+    if v166 then
+        local v167 = v166:gsub("^%s*(.-)%s*$", "%1")
+        local v168, v169, v170 = ipairs(_G.blacklistedPlayers)
+        while true do
+            local v171
+            v170, v171 = v168(v169, v170)
+            if v170 == nil then
+                break
+            end
+            if v171:lower() == v167:lower() then
+                return
+            end
+        end
+        table.insert(_G.blacklistedPlayers, v167)
+    end
+end)
+local v173, v174, v175 = ipairs(game:GetService("Players"):GetPlayers())
+local vu176 = vu98
+local vu177 = vu140
+local vu178 = vu93
+local vu179 = vu101
+local function vu181(p180)
+    return p180.DisplayName .. " | " .. p180.Name
+end
+local function vu187(p182)
+    local v183, v184, v185 = ipairs(_G.blacklistedPlayers)
+    while true do
+        local v186
+        v185, v186 = v183(v184, v185)
+        if v185 == nil then
+            break
+        end
+        if v186:lower() == p182.Name:lower() then
+            return true
+        end
+    end
+    return false
+end
+while true do
+    local v188, v189 = v173(v174, v175)
+    if v188 == nil then
+        break
+    end
+    v175 = v188
+    if v189 ~= game.Players.LocalPlayer then
+        local v190 = vu181(v189)
+        vu148:Add(v190)
+        vu172:Add(v190)
+    end
+end
+game:GetService("Players").PlayerAdded:Connect(function(p191)
+    if p191 ~= game.Players.LocalPlayer then
+        local v192 = vu181(p191)
+        vu148:Add(v192)
+        vu172:Add(v192)
+    end
+end)
+game:GetService("Players").PlayerRemoving:Connect(function(p193)
+    local v194 = vu181(p193)
+    local v195 = vu148
+    local v196, v197, v198 = pairs(v195:GetItems())
+    while true do
+        local v199
+        v198, v199 = v196(v197, v198)
+        if v198 == nil then
+            break
+        end
+        if v199.Text == v194 then
+            vu148:Remove(v199.Text)
+            break
+        end
+    end
+    local v200 = vu172
+    local v201, v202, v203 = pairs(v200:GetItems())
+    while true do
+        local v204
+        v203, v204 = v201(v202, v203)
+        if v203 == nil then
+            break
+        end
+        if v204.Text == v194 then
+            vu172:Remove(v204.Text)
+            break
+        end
+    end
+end)
+v92:AddSwitch("Kill Blacklist", function(p205)
+    _G.killBlacklistedOnly = p205
+    if p205 then
+        if not _G.blacklistKillConnection then
+            _G.blacklistKillConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                if _G.killBlacklistedOnly then
+                    local v206, v207, v208 = ipairs(game:GetService("Players"):GetPlayers())
+                    while true do
+                        local v209
+                        v208, v209 = v206(v207, v208)
+                        if v208 == nil then
+                            break
+                        end
+                        if v209 ~= game.Players.LocalPlayer and vu187(v209) then
+                            vu104(v209)
+                        end
+                    end
+                end
+            end)
+        end
+    elseif _G.blacklistKillConnection then
+        _G.blacklistKillConnection:Disconnect()
+        _G.blacklistKillConnection = nil
+    end
+end)
+v92:AddLabel("")
+v92:AddLabel("Kill Aura").TextSize = 20
+v92:AddTextBox("Range (1-140)", function(p210)
+    local v211 = tonumber(p210)
+    if v211 then
+        _G.deathRingRange = math.clamp(v211, 1, 140)
+    end
+end)
+v92:AddSwitch("Death Ring", function(p212)
+    _G.deathRingEnabled = p212
+    if p212 then
+        if not _G.deathRingConnection then
+            _G.deathRingConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                local v213 = vu178()
+                local v214 = v213 and v213:FindFirstChild("HumanoidRootPart")
+                if v214 then
+                    v214 = v213.HumanoidRootPart.Position
+                end
+                if v214 then
+                    local v215, v216, v217 = ipairs(game:GetService("Players"):GetPlayers())
+                    while true do
+                        local v218
+                        v217, v218 = v215(v216, v217)
+                        if v217 == nil then
+                            break
+                        end
+                        if v218 ~= game.Players.LocalPlayer and (not vu177(v218) and vu179(v218)) and (v214 - v218.Character.HumanoidRootPart.Position).Magnitude <= (_G.deathRingRange or 20) then
+                            vu104(v218)
+                        end
+                    end
+                end
+            end)
+        end
+    elseif _G.deathRingConnection then
+        _G.deathRingConnection:Disconnect()
+        _G.deathRingConnection = nil
+    end
+end):Set(false)
+v92:AddLabel("")
+local vu219 = v92:AddLabel("Whitelist: None")
+vu219.TextColor3 = Color3.fromRGB(26, 212, 51)
+vu219.TextSize = 17
+v92:AddButton("Clear Whitelist", function()
+    _G.whitelistedPlayers = {}
+end)
+local vu220 = v92:AddLabel("Blacklist: None")
+vu220.TextColor3 = Color3.fromRGB(191, 25, 25)
+vu220.TextSize = 17
+v92:AddButton("Clear Blacklist", function()
+    _G.blacklistedPlayers = {}
+end)
+local function vu221()
+    if # _G.whitelistedPlayers ~= 0 then
+        vu219.Text = "Whitelist: " .. table.concat(_G.whitelistedPlayers, ", ")
+    else
+        vu219.Text = "Whitelist: None"
+    end
+end
+local function vu222()
+    if # _G.blacklistedPlayers ~= 0 then
+        vu220.Text = "Blacklist: " .. table.concat(_G.blacklistedPlayers, ", ")
+    else
+        vu220.Text = "Blacklist: None"
+    end
+end
+task.spawn(function()
+    while true do
+        vu221()
+        vu222()
+        task.wait(0.2)
+    end
+end)
+local vu223 = v1:AddTab("Farming")
+vu223:AddLabel("Misc").TextSize = 20
+vu223:AddSwitch("Auto Lift (Gamepass)", function(p224)
+    if p224 then
+        local v225 = game:GetService("ReplicatedStorage").gamepassIds
+        local v226 = game:GetService("Players").LocalPlayer
+        local v227, v228, v229 = pairs(v225:GetChildren())
+        while true do
+            local v230
+            v229, v230 = v227(v228, v229)
+            if v229 == nil then
+                break
+            end
+            local v231 = Instance.new("IntValue")
+            v231.Name = v230.Name
+            v231.Value = v230.Value
+            v231.Parent = v226.ownedGamepasses
+        end
+    else
+        local v232 = game:GetService("Players").LocalPlayer
+        if v232 and v232.ownedGamepasses then
+            local v233 = game:GetService("ReplicatedStorage").gamepassIds
+            local v234, v235, v236 = pairs(v233:GetChildren())
+            while true do
+                local v237
+                v236, v237 = v234(v235, v236)
+                if v236 == nil then
+                    break
+                end
+                local v238 = v232.ownedGamepasses:FindFirstChild(v237.Name)
+                if v238 and v238.Value == v237.Value then
+                    v238:Destroy()
+                end
+            end
+        end
+    end
+end)
+game:GetService("RunService")
+local vu239 = game:GetService("Players")
+local vu240 = vu239.LocalPlayer
+local vu241 = vu240.Character or vu240.CharacterAdded:Wait()
+local vu242 = vu240:WaitForChild("Backpack")
+local vu243 = false
+local vu244 = nil
+vu223:AddSwitch("Auto Punch (without animation)", function(p245)
+    vu243 = p245
+    if vu243 then
+        vu244 = task.spawn(function()
+            local v246 = vu242:FindFirstChild("Punch") or vu241:FindFirstChild("Punch")
+            if not v246 then
+                repeat
+                    v246 = vu242:FindFirstChild("Punch") or vu241:FindFirstChild("Punch")
+                    task.wait(0.1)
+                until v246
+            end
+            local v247
+            if v246.Parent ~= vu242 then
+                v247 = "leftHand"
+            else
+                v246.Parent = vu241
+                v247 = "leftHand"
+            end
+            while vu243 do
+                if vu240:FindFirstChild("muscleEvent") then
+                    vu240.muscleEvent:FireServer("punch", v247)
+                    v247 = v247 == "leftHand" and "rightHand" or "leftHand"
+                end
+                task.wait(0.2)
+            end
+        end)
+    else
+        local v248 = vu241:FindFirstChild("Punch")
+        if v248 then
+            v248.Parent = vu242
+        end
+    end
+end):Set(false)
+local vu249 = vu223:AddLabel("\239\191\189\239\191\189\239\184\143Rebirths:")
+vu249.TextSize = 20
+local function vu255(p250)
+    local v251 = tostring(p250)
+    local v252 = 0
+    local v253 = ""
+    for v254 = # v251, 1, - 1 do
+        v252 = v252 + 1
+        v253 = v251:sub(v254, v254) .. v253
+        if v252 % 3 == 0 then
+            if v254 > 1 then
+                v253 = "," .. v253
+            end
+        end
+    end
+    return v253
+end
+task.spawn(function()
+    local v256 = game.Players.LocalPlayer.leaderstats:WaitForChild("Rebirths")
+    while true do
+        vu249.Text = "Rebirths: " .. vu255(v256.Value)
+        task.wait(0.2)
+    end
+end)
+vu223:AddSwitch("Auto Rebirth", function(p257)
+    if p257 then
+        while true do
+            vu2.rEvents.rebirthRemote:InvokeServer("rebirthRequest")
+            task.wait(0.05)
+        end
+    else
+        return
+    end
+end):Set(false)
+vu223:AddSwitch("Auto Size 1", function(p258)
+    vu85 = p258
+end):Set(false)
+task.spawn(function()
+    while true do
+        if vu85 then
+            local v259 = vu239.LocalPlayer.Character
+            if v259 and v259:FindFirstChildOfClass("Humanoid") then
+                vu84:InvokeServer("changeSize", 1)
+            end
+        end
+        task.wait(0.05)
+    end
+end)
+local vu260 = CFrame.new(- 8665.4, 17.21, - 5792.9)
+local vu261 = false
+vu223:AddSwitch("Auto King", function(p262)
+    vu261 = p262
+end):Set(false)
+task.spawn(function()
+    local v263 = vu239.LocalPlayer
+    local v264 = (v263.Character or v263.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+    while true do
+        if vu261 and (v264.Position - vu260.Position).magnitude > 5 then
+            v264.CFrame = vu260
+        end
+        task.wait(0.05)
+    end
+end)
+vu223:AddLabel("Tools").TextSize = 20
+local vu265 = nil
+local vu266 = false
+local v268 = vu223:AddDropdown("Select Tool", function(p267)
+    vu265 = p267
+end)
+v268:Add("Weight")
+v268:Add("Pushups")
+v268:Add("Situps")
+v268:Add("Handstands")
+v268:Add("Fast Punch")
+v268:Add("Stomp")
+v268:Add("Ground Slam")
+vu223:AddSwitch("Start", function(p269)
+    vu266 = p269
+    if p269 then
+        task.spawn(function()
+            while vu266 do
+                local v270 = game:GetService("Players").LocalPlayer
+                if vu265 ~= "Weight" then
+                    if vu265 ~= "Pushups" then
+                        if vu265 ~= "Situps" then
+                            if vu265 ~= "Handstands" then
+                                if vu265 ~= "Fast Punch" then
+                                    if vu265 ~= "Stomp" then
+                                        if vu265 == "Ground Slam" then
+                                            local v271 = v270.Backpack:FindFirstChild("Ground Slam")
+                                            if v271 then
+                                                v271.Parent = v270.Character
+                                                if v271:FindFirstChild("attackTime") then
+                                                    v271.attackTime.Value = 0
+                                                end
+                                            end
+                                            v270.muscleEvent:FireServer("slam")
+                                            if v270.Character:FindFirstChild("Ground Slam") then
+                                                v270.Character["Ground Slam"]:Activate()
+                                            end
+                                            if tick() % 6 < 0.1 then
+                                                local v272 = game:GetService("VirtualUser")
+                                                v272:CaptureController()
+                                                v272:ClickButton1(Vector2.new(500, 500))
+                                            end
+                                        end
+                                    else
+                                        local v273 = v270.Backpack:FindFirstChild("Stomp")
+                                        if v273 then
+                                            v273.Parent = v270.Character
+                                            if v273:FindFirstChild("attackTime") then
+                                                v273.attackTime.Value = 0
+                                            end
+                                        end
+                                        v270.muscleEvent:FireServer("stomp")
+                                        if v270.Character:FindFirstChild("Stomp") then
+                                            v270.Character.Stomp:Activate()
+                                        end
+                                        if tick() % 6 < 0.1 then
+                                            local v274 = game:GetService("VirtualUser")
+                                            v274:CaptureController()
+                                            v274:ClickButton1(Vector2.new(500, 500))
+                                        end
+                                    end
+                                else
+                                    local v275 = v270.Backpack:FindFirstChild("Punch")
+                                    if v275 then
+                                        v275.Parent = v270.Character
+                                        if v275:FindFirstChild("attackTime") then
+                                            v275.attackTime.Value = 0
+                                        end
+                                    end
+                                    v270.muscleEvent:FireServer("punch", "rightHand")
+                                    v270.muscleEvent:FireServer("punch", "leftHand")
+                                    if v270.Character:FindFirstChild("Punch") then
+                                        v270.Character.Punch:Activate()
+                                    end
+                                end
+                            else
+                                local v276 = not v270.Character:FindFirstChild("Handstands") and v270.Backpack:FindFirstChild("Handstands")
+                                if v276 then
+                                    v270.Character.Humanoid:EquipTool(v276)
+                                end
+                                v270.muscleEvent:FireServer("rep")
+                            end
+                        else
+                            local v277 = not v270.Character:FindFirstChild("Situps") and v270.Backpack:FindFirstChild("Situps")
+                            if v277 then
+                                v270.Character.Humanoid:EquipTool(v277)
+                            end
+                            v270.muscleEvent:FireServer("rep")
+                        end
+                    else
+                        local v278 = not v270.Character:FindFirstChild("Pushups") and v270.Backpack:FindFirstChild("Pushups")
+                        if v278 then
+                            v270.Character.Humanoid:EquipTool(v278)
+                        end
+                        v270.muscleEvent:FireServer("rep")
+                    end
+                else
+                    local v279 = not v270.Character:FindFirstChild("Weight") and v270.Backpack:FindFirstChild("Weight")
+                    if v279 then
+                        v270.Character.Humanoid:EquipTool(v279)
+                    end
+                    v270.muscleEvent:FireServer("rep")
+                end
+                task.wait()
+            end
+        end)
+    else
+        local v280 = game:GetService("Players").LocalPlayer
+        if vu265 and v280.Character:FindFirstChild(vu265) then
+            v280.Character:FindFirstChild(vu265).Parent = v280.Backpack
+        end
+    end
+end)
+vu223:AddLabel("Rocks").TextSize = 20
+local vu281 = {
+    ["Tiny Rock"] = 0,
+    ["Starter Island"] = 100,
+    ["Punching Rock"] = 1000,
+    ["Golden Rock"] = 5000,
+    ["Frost Rock"] = 150000,
+    ["Mythical Rock"] = 400000,
+    ["Eternal Rock"] = 750000,
+    ["Legend Rock"] = 1000000,
+    ["Muscle King Rock"] = 5000000,
+    ["Jungle Rock"] = 10000000
+}
+local vu282 = nil
+local v284 = vu223:AddDropdown("Select Rock", function(p283)
+    vu282 = p283
+end)
+local v285, v286, v287 = pairs(vu281)
+local vu288 = vu282
+while true do
+    v287 = v285(v286, v287)
+    if v287 == nil then
+        break
+    end
+    v284:Add(v287)
+end
+vu223:AddSwitch("Fast Glitch", function(p289)
+    getgenv().RockFarmRunning = p289
+    if p289 and vu288 then
+        task.spawn(function()
+            local v290 = vu281[vu288]
+            local v291 = game:GetService("Players").LocalPlayer
+            while getgenv().RockFarmRunning do
+                task.wait()
+                if v290 <= v291.Durability.Value then
+                    local v292, v293, v294 = pairs(workspace.machinesFolder:GetDescendants())
+                    while true do
+                        local v295
+                        v294, v295 = v292(v293, v294)
+                        if v294 == nil then
+                            break
+                        end
+                        if v295.Name == "neededDurability" and v295.Value == v290 and (v291.Character:FindFirstChild("LeftHand") and v291.Character:FindFirstChild("RightHand")) then
+                            local v296 = v295.Parent:FindFirstChild("Rock")
+                            if v296 then
+                                firetouchinterest(v296, v291.Character.RightHand, 0)
+                                firetouchinterest(v296, v291.Character.RightHand, 1)
+                                firetouchinterest(v296, v291.Character.LeftHand, 0)
+                                firetouchinterest(v296, v291.Character.LeftHand, 1)
+                                vu176()
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+vu223:AddLabel("Machines").TextSize = 20
+local vu297 = nil
+local vu298 = nil
+local vu299 = false
+local vu300 = nil
+local vu301 = nil
+local function vu303()
+    local v302 = game:GetService("VirtualInputManager")
+    v302:SendKeyEvent(true, "E", false, game)
+    task.wait(0.1)
+    v302:SendKeyEvent(false, "E", false, game)
+end
+local function vu304()
+    while vu299 and task.wait() do
+        game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
+    end
+end
+local function vu305()
+    if vu301 then
+        vu301:Cancel()
+        vu301 = nil
+    end
+end
+local function vu308(_, p306)
+    local v307 = game.Players.LocalPlayer.Character
+    if v307 and v307:FindFirstChild("HumanoidRootPart") then
+        v307.HumanoidRootPart.CFrame = p306
+        task.wait(0.5)
+        vu303()
+        if vu299 then
+            vu301 = task.spawn(vu304)
+        end
+    end
+end
+local vu309 = {
+    ["Bench Press"] = {
+        ["Jungle Gym"] = CFrame.new(- 8173, 64, 1898),
+        ["Muscle King Gym"] = CFrame.new(- 8590.06152, 46.0167427, - 6043.34717),
+        ["Legend Gym"] = CFrame.new(4111.91748, 1020.46674, - 3799.97217)
+    },
+    Squat = {
+        ["Jungle Gym"] = CFrame.new(- 8352, 34, 2878),
+        ["Muscle King Gym"] = CFrame.new(- 8940.12402, 13.1642084, - 5699.13477),
+        ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, - 4124.2334)
+    },
+    ["Pull Up"] = {
+        ["Jungle Gym"] = CFrame.new(- 8666, 34, 2070),
+        ["Muscle King Gym"] = CFrame.new(- 8940.12402, 13.1642084, - 5699.13477),
+        ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, - 4124.2334)
+    },
+    Boulder = {
+        ["Jungle Gym"] = CFrame.new(- 8621, 34, 2684),
+        ["Muscle King Gym"] = CFrame.new(- 8940.12402, 13.1642084, - 5699.13477),
+        ["Legend Gym"] = CFrame.new(4304.99023, 987.829956, - 4124.2334)
+    }
+}
+vu223:AddSwitch("Start", function(p310)
+    vu299 = p310
+    if p310 then
+        if vu297 and (vu298 and vu309[vu298][vu297]) then
+            vu308(vu298, vu309[vu298][vu297])
+        end
+    else
+        vu305()
+    end
+end)
+local v315 = vu223:AddDropdown("Gym", function(p311)
+    vu297 = p311
+    if vu300 then
+        vu300:Clear()
+    end
+    if p311 == "Jungle Gym" then
+        vu300 = vu223:AddDropdown("Machine", function(p312)
+            vu298 = p312
+        end)
+        vu300:Add("Bench Press")
+        vu300:Add("Squat")
+        vu300:Add("Pull Up")
+        vu300:Add("Boulder")
+    elseif p311 == "Muscle King Gym" then
+        vu300 = vu223:AddDropdown("Machine", function(p313)
+            vu298 = p313
+        end)
+        vu300:Add("Bench Press")
+        vu300:Add("Squat")
+        vu300:Add("Pull Up")
+        vu300:Add("Boulder")
+    elseif p311 == "Legend Gym" then
+        vu300 = vu223:AddDropdown("Machine", function(p314)
+            vu298 = p314
+        end)
+        vu300:Add("Bench Press")
+        vu300:Add("Squat")
+        vu300:Add("Pull Up")
+        vu300:Add("Boulder")
+    end
+end)
+local v316, v317, v318 = ipairs({
+    "Jungle Gym",
+    "Muscle King Gym",
+    "Legend Gym"
+})
+while true do
+    local v319
+    v318, v319 = v316(v317, v318)
+    if v318 == nil then
+        break
+    end
+    v315:Add(v319)
+end
+local v320 = v1:AddTab("Rebirthing")
+v320:AddLabel("Farming").TextSize = 20
+local vu321 = v320:AddLabel("Rebirths:")
+vu321.TextSize = 17
+local function vu327(p322)
+    local v323 = tostring(p322)
+    local v324 = 0
+    local v325 = ""
+    for v326 = # v323, 1, - 1 do
+        v324 = v324 + 1
+        v325 = v323:sub(v326, v326) .. v325
+        if v324 % 3 == 0 then
+            if v326 > 1 then
+                v325 = "," .. v325
+            end
+        end
+    end
+    return v325
+end
+task.spawn(function()
+    local v328 = game.Players.LocalPlayer.leaderstats:WaitForChild("Rebirths")
+    while true do
+        vu321.Text = "Rebirths: " .. vu327(v328.Value)
+        task.wait(0.2)
+    end
+end)
+local vu329 = game.Players.LocalPlayer
+local v330 = vu329
+local vu331 = vu329.WaitForChild(v330, "muscleEvent")
+local vu332 = game:GetService("ReplicatedStorage")
+local function vu341()
+    local v333, v334, v335 = pairs(vu329.petsFolder:GetChildren())
+    while true do
+        local v336
+        v335, v336 = v333(v334, v335)
+        if v335 == nil then
+            break
+        end
+        if v336:IsA("Folder") then
+            local v337, v338, v339 = pairs(v336:GetChildren())
+            while true do
+                local v340
+                v339, v340 = v337(v338, v339)
+                if v339 == nil then
+                    break
+                end
+                vu332.rEvents.equipPetEvent:FireServer("unequipPet", v340)
+            end
+        end
+    end
+    task.wait(0.1)
+end
+local function vu347(p342)
+    vu341()
+    task.wait(0.01)
+    local v343, v344, v345 = pairs(vu329.petsFolder.Unique:GetChildren())
+    while true do
+        local v346
+        v345, v346 = v343(v344, v345)
+        if v345 == nil then
+            break
+        end
+        if v346.Name == p342 then
+            vu332.rEvents.equipPetEvent:FireServer("equipPet", v346)
+        end
+    end
+end
+local vu348 = false
+local function vu351()
+    while vu348 do
+        vu347("Swift Samurai")
+        task.wait(0.4)
+        local v349 = 5000 + vu329.leaderstats.Rebirths.Value * 2550
+        while vu348 and vu329.leaderstats.Strength.Value < v349 do
+            for _ = 1, vu329.MembershipType == Enum.MembershipType.Premium and 8 or 14 do
+                vu331:FireServer("rep")
+            end
+            task.wait(0.02)
+        end
+        if v349 <= vu329.leaderstats.Strength.Value then
+            vu347("Tribal Overlord")
+            task.wait(0.25)
+            local v350 = vu329.leaderstats.Rebirths.Value
+            repeat
+                vu332.rEvents.rebirthRemote:InvokeServer("rebirthRequest")
+                task.wait(0.05)
+            until v350 < vu329.leaderstats.Rebirths.Value
+            task.wait(0.5)
+        end
+    end
+end
+v320:AddSwitch("Fast Rebirth", function(p352)
+    if p352 then
+        vu348 = true
+        vu351()
+    else
+        vu348 = false
+    end
+end)
+local vu353 = false
+local vu354 = nil
+v320:AddSwitch("Lock Position", function(p355)
+    vu353 = p355
+    if vu353 then
+        local v356 = game.Players.LocalPlayer
+        local vu357 = (v356.Character or v356.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+        local vu358 = vu357.Position
+        vu354 = coroutine.create(function()
+            while vu353 do
+                vu357.Velocity = Vector3.new(0, 0, 0)
+                vu357.RotVelocity = Vector3.new(0, 0, 0)
+                vu357.CFrame = CFrame.new(vu358)
+                wait(0.05)
+            end
+        end)
+        coroutine.resume(vu354)
+    end
+end):Set(false)
+v320:AddLabel("Pets").TextSize = 20
+v320:AddButton("Equip Swift Samurai", function()
+    vu341()
+    vu347("Swift Samurai")
+end)
+v320:AddButton("Equip Tribal Overlord", function()
+    vu341()
+    vu347("Tribal Overlord")
+end)
+local vu359 = v1:AddTab("Speed Farming")
+local v360 = vu359
+vu359.AddLabel(v360, "Farming").TextSize = 20
+local vu361 = game.Players.LocalPlayer
+local v362 = vu361
+local vu363 = vu361.WaitForChild(v362, "muscleEvent")
+local vu364 = false
+local vu365 = 500
+local vu366 = true
+local vu367 = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]
+local function vu368()
+    return vu367:GetValue()
+end
+local function vu370(p369)
+    return p369 < 80 and 500 or (p369 < 150 and 300 or (p369 < 250 and 100 or 50))
+end
+local v371 = vu359
+vu359.AddTextBox(v371, "Base Speed", function(p372)
+    local v373 = tonumber(p372)
+    if v373 then
+        vu365 = math.clamp(math.floor(v373), 1, 1000)
+    end
+end, {
+    placeholder = "500"
+})
+local v374 = vu359
+vu359.AddSwitch(v374, "Safety Mode", function(p375)
+    vu366 = p375
+end):Set(true)
+local function vu382()
+    local v376 = vu363.FireServer
+    local v377 = time()
+    local v378 = vu368()
+    while vu364 do
+        if time() - v377 > 0.5 then
+            v378 = vu368()
+            v377 = time()
+        end
+        local v379 = vu366 and vu370(v378) or vu365
+        local v380 = math.clamp(v378 / 2500, 0.001, 0.1)
+        for v381 = 1, math.min(v379, vu365) do
+            v376(vu363, "rep")
+            if v381 % 50 == 0 then
+                task.wait(0)
+            end
+        end
+        task.wait(v380)
+    end
+end
+local v383 = vu359
+vu359.AddSwitch(v383, "Fast Rep", function(p384)
+    vu364 = p384
+    if vu364 then
+        task.spawn(vu382)
+    end
+end)
+local v385 = vu359
+vu359.AddLabel(v385, "Current Ping: 0ms").TextSize = 16
+task.spawn(function()
+    while true do
+        if vu364 then
+            local v386 = vu368()
+            local v387 = vu359
+            vu359:GetChildren()[# v387:GetChildren()]:SetText("Current Ping: " .. v386 .. "ms")
+        end
+        task.wait(0.5)
+    end
+end)
+local v388 = vu359
+vu359.AddLabel(v388, "Misc").TextSize = 20
+local function vu390()
+    local v389 = vu361.Character:FindFirstChild("Protein Egg") or vu361.Backpack:FindFirstChild("Protein Egg")
+    if v389 then
+        vu363:FireServer("proteinEgg", v389)
+    end
+end
+local vu391 = false
+task.spawn(function()
+    while true do
+        while vu391 do
+            vu390()
+            task.wait(1800)
+        end
+        task.wait(1)
+    end
+end)
+local v392 = vu359
+vu359.AddSwitch(v392, "Auto Egg", function(p393)
+    vu391 = p393
+    if p393 then
+        vu390()
+    end
+end):Set(false)
+local function vu395()
+    local v394 = vu361.Character:FindFirstChild("Tropical Shake") or vu361.Backpack:FindFirstChild("Tropical Shake")
+    if v394 then
+        vu363:FireServer("tropicalShake", v394)
+    end
+end
+local vu396 = false
+task.spawn(function()
+    while true do
+        while vu396 do
+            vu395()
+            task.wait(900)
+        end
+        task.wait(1)
+    end
+end)
+local v397 = vu359
+vu359.AddSwitch(v397, "Auto Shake", function(p398)
+    vu396 = p398
+    if p398 then
+        vu395()
+    end
+end):Set(false)
+local v399 = vu359
+vu359.AddButton(v399, "Anti Lag", function()
+    local v400 = game.Players.LocalPlayer
+    local v401 = v400:WaitForChild("PlayerGui")
+    local vu402 = game:GetService("Lighting")
+    local v403, v404, v405 = pairs(v401:GetChildren())
+    while true do
+        local v406
+        v405, v406 = v403(v404, v405)
+        if v405 == nil then
+            break
+        end
+        if v406:IsA("ScreenGui") then
+            v406:Destroy()
+        end
+    end;
+    (function()
+        local v407, v408, v409 = pairs(workspace:GetDescendants())
+        while true do
+            local v410
+            v409, v410 = v407(v408, v409)
+            if v409 == nil then
+                break
+            end
+            if v410:IsA("ParticleEmitter") then
+                v410:Destroy()
+            end
+        end
+    end)();
+    (function()
+        local v411, v412, v413 = pairs(workspace:GetDescendants())
+        while true do
+            local v414
+            v413, v414 = v411(v412, v413)
+            if v413 == nil then
+                break
+            end
+            if v414:IsA("PointLight") or (v414:IsA("SpotLight") or v414:IsA("SurfaceLight")) then
+                v414:Destroy()
+            end
+        end
+    end)();
+    (function()
+        local v415 = vu402
+        local v416, v417, v418 = pairs(v415:GetChildren())
+        while true do
+            local v419
+            v418, v419 = v416(v417, v418)
+            if v418 == nil then
+                break
+            end
+            if v419:IsA("Sky") then
+                v419:Destroy()
+            end
+        end
+        local vu420 = Instance.new("Sky")
+        vu420.Name = "DarkSky"
+        vu420.SkyboxBk = "rbxassetid://0"
+        vu420.SkyboxDn = "rbxassetid://0"
+        vu420.SkyboxFt = "rbxassetid://0"
+        vu420.SkyboxLf = "rbxassetid://0"
+        vu420.SkyboxRt = "rbxassetid://0"
+        vu420.SkyboxUp = "rbxassetid://0"
+        vu420.Parent = vu402
+        vu402.Brightness = 0
+        vu402.ClockTime = 0
+        vu402.TimeOfDay = "00:00:00"
+        vu402.OutdoorAmbient = Color3.new(0, 0, 0)
+        vu402.Ambient = Color3.new(0, 0, 0)
+        vu402.FogColor = Color3.new(0, 0, 0)
+        vu402.FogEnd = 100
+        task.spawn(function()
+            while true do
+                wait(5)
+                if not vu402:FindFirstChild("DarkSky") then
+                    vu420:Clone().Parent = vu402
+                end
+                vu402.Brightness = 0
+                vu402.ClockTime = 0
+                vu402.OutdoorAmbient = Color3.new(0, 0, 0)
+                vu402.Ambient = Color3.new(0, 0, 0)
+                vu402.FogColor = Color3.new(0, 0, 0)
+                vu402.FogEnd = 100
+            end
+        end)
+    end)()
+end)
+local v421 = vu359
+vu359.AddLabel(v421, "Pets").TextSize = 20
+local v422 = vu359
+vu359.AddButton(v422, "Equip Swift Samurai", function()
+    vu341()
+    vu347("Swift Samurai")
+end)
+local v423 = vu359
+vu359.AddButton(v423, "Equip Tribal Overlord", function()
+    vu341()
+    vu347("Tribal Overlord")
+end)
+local v424 = v1:AddTab("Teleports")
+v424:Show()
+v424:AddLabel("Main").TextSize = 20
+v424:AddButton("Tiny Island", function()
+    (game.Players.LocalPlayer.Character or Player.CharacterAdded:wait()):WaitForChild("HumanoidRootPart").CFrame = CFrame.new(- 37.1, 9.2, 1919)
+end)
+v424:AddButton("Main Island", function()
+    (game.Players.LocalPlayer.Character or Player.CharacterAdded:wait()):WaitForChild("HumanoidRootPart").CFrame = CFrame.new(16.07, 9.08, 133.8)
+end)
+v424:AddButton("Beach", function()
+    (game.Players.LocalPlayer.Character or Player.CharacterAdded:wait()):WaitForChild("HumanoidRootPart").CFrame = CFrame.new(- 8, 9, - 169.2)
+end)
+v424:AddLabel("Gyms").TextSize = 22
+v424:AddButton("Muscle King Gym", function()
+    (game.Players.LocalPlayer.Character or Player.CharacterAdded:wait()):WaitForChild("HumanoidRootPart").CFrame = CFrame.new(- 8665.4, 17.21, - 5792.9)
+end)
+v424:AddButton("Jungle Gym", function()
+    (game.Players.LocalPlayer.Character or Player.CharacterAdded:wait()):WaitForChild("HumanoidRootPart").CFrame = CFrame.new(- 8543, 6.8, 2400)
+end)
+v424:AddButton("Legends Gym", function()
+    (game.Players.LocalPlayer.Character or Player.CharacterAdded:wait()):WaitForChild("HumanoidRootPart").CFrame = CFrame.new(4516, 991.5, - 3856)
+end)
+v424:AddButton("Infernal Gym", function()
+    (game.Players.LocalPlayer.Character or Player.CharacterAdded:wait()):WaitForChild("HumanoidRootPart").CFrame = CFrame.new(- 6759, 7.36, - 1284)
+end)
+v424:AddButton("Mythical Gym", function()
+    (game.Players.LocalPlayer.Character or Player.CharacterAdded:wait()):WaitForChild("HumanoidRootPart").CFrame = CFrame.new(2250, 7.37, 1073.2)
+end)
+v424:AddButton("Frost Gym", function()
+    (game.Players.LocalPlayer.Character or Player.CharacterAdded:wait()):WaitForChild("HumanoidRootPart").CFrame = CFrame.new(- 2623, 7.36, - 409)
+end)
+local v425 = v1:AddTab("Inventory")
+v425:AddLabel("Inventory:").TextSize = 20
+v425:AddLabel("Get on a Machine while gifting!").TextSize = 17
+local vu426 = v425:AddLabel("Protein Eggs: 0")
+vu426.TextSize = 18
+local vu427 = v425:AddLabel("Tropical Shakes: 0")
+vu427.TextSize = 18
+local function vu435()
+    local v428 = 0
+    local v429 = 0
+    local v430 = vu239.LocalPlayer:WaitForChild("Backpack")
+    if v430 then
+        local v431, v432, v433 = ipairs(v430:GetChildren())
+        while true do
+            local v434
+            v433, v434 = v431(v432, v433)
+            if v433 == nil then
+                break
+            end
+            if v434.Name ~= "Protein Egg" then
+                if v434.Name == "Tropical Shake" then
+                    v429 = v429 + 1
+                end
+            else
+                v428 = v428 + 1
+            end
+        end
+    end
+    vu426.Text = "Protein Eggs: " .. v428
+    vu427.Text = "Tropical Shakes: " .. v429
+end
+task.spawn(function()
+    while true do
+        vu435()
+        task.wait(10)
+    end
+end)
+local vu436 = game:GetService("Players")
+local vu437 = game:GetService("ReplicatedStorage")
+v425:AddLabel("Egg Gifter").TextSize = 20
+local vu438 = nil
+local vu441 = v425:AddDropdown("Choose Player", function(p439)
+    local v440 = p439:match("| (.+)$")
+    if v440 then
+        vu438 = vu436:FindFirstChild(v440)
+    end
+end)
+local v442 = vu436
+local v443, v444, v445 = ipairs(vu436.GetPlayers(v442))
+local vu446 = vu361
+local vu447 = vu363
+local vu448 = vu438
+local vu449 = vu436
+local function vu451(p450)
+    return p450.DisplayName .. " | " .. p450.Name
+end
+local vu452 = 0
+while true do
+    local v453, v454 = v443(v444, v445)
+    if v453 == nil then
+        break
+    end
+    v445 = v453
+    if v454 ~= vu449.LocalPlayer then
+        vu441:Add(vu451(v454), v454.Name)
+    end
+end
+vu449.PlayerAdded:Connect(function(p455)
+    if p455 ~= vu449.LocalPlayer then
+        vu441:Add(vu451(p455), p455.Name)
+    end
+end)
+vu449.PlayerRemoving:Connect(function(p456)
+    local v457 = vu441
+    local v458, v459, v460 = pairs(v457:GetItems())
+    while true do
+        local v461
+        v460, v461 = v458(v459, v460)
+        if v460 == nil then
+            break
+        end
+        if v461.Text:match("| " .. p456.Name .. "$") then
+            vu441:Remove(v461.Text)
+            break
+        end
+    end
+    if vu448 == p456 then
+        vu448 = nil
+    end
+end)
+v425:AddTextBox("Amount", function(p462)
+    vu452 = tonumber(p462)
+end)
+v425:AddButton("Start Gifting", function()
+    if vu448 and (vu452 and vu452 > 0) then
+        for _ = 1, vu452 do
+            local v463 = {
+                "giftRequest",
+                vu448,
+                vu449.LocalPlayer.consumablesFolder:FindFirstChild("Protein Egg")
+            }
+            vu437.rEvents.giftRemote:InvokeServer(unpack(v463))
+        end
+    end
+end)
+v425:AddLabel("Shake Gifter").TextSize = 20
+local vu464 = nil
+local vu467 = v425:AddDropdown("Choose Player", function(p465)
+    local v466 = p465:match("| (.+)$")
+    if v466 then
+        vu464 = vu449:FindFirstChild(v466)
+    end
+end)
+local v468, v469, v470 = ipairs(vu449:GetPlayers())
+local vu471 = vu464
+local vu472 = 0
+while true do
+    local v473, v474 = v468(v469, v470)
+    if v473 == nil then
+        break
+    end
+    v470 = v473
+    if v474 ~= vu449.LocalPlayer then
+        vu467:Add(vu451(v474), v474.Name)
+    end
+end
+vu449.PlayerAdded:Connect(function(p475)
+    if p475 ~= vu449.LocalPlayer then
+        vu467:Add(vu451(p475), p475.Name)
+    end
+end)
+vu449.PlayerRemoving:Connect(function(p476)
+    local v477 = vu467
+    local v478, v479, v480 = pairs(v477:GetItems())
+    while true do
+        local v481
+        v480, v481 = v478(v479, v480)
+        if v480 == nil then
+            break
+        end
+        if v481.Text:match("| " .. p476.Name .. "$") then
+            vu467:Remove(v481.Text)
+            break
+        end
+    end
+    if vu471 == p476 then
+        vu471 = nil
+    end
+end)
+v425:AddTextBox("Amount", function(p482)
+    vu472 = tonumber(p482)
+end)
+v425:AddButton("Start Gifting", function()
+    if vu471 and (vu472 and vu472 > 0) then
+        for _ = 1, vu472 do
+            local v483 = {
+                "giftRequest",
+                vu471,
+                vu449.LocalPlayer.consumablesFolder:FindFirstChild("Tropical Shake")
+            }
+            vu437.rEvents.giftRemote:InvokeServer(unpack(v483))
+        end
+    end
+end)
+v425:AddLabel("Eater").TextSize = 20
+local function vu485()
+    local v484 = vu446.Character:FindFirstChild("Protein Egg") or vu446.Backpack:FindFirstChild("Protein Egg")
+    if v484 then
+        vu447:FireServer("proteinEgg", v484)
+    end
+end
+local vu486 = false
+task.spawn(function()
+    while true do
+        while vu486 do
+            vu485()
+            task.wait(0.3)
+        end
+        task.wait(0.5)
+    end
+end)
+v425:AddSwitch("Egg Devour", function(p487)
+    vu486 = p487
+    if p487 then
+        vu485()
+    end
+end):Set(false)
+local vu488 = {
+    "Tropical Shake",
+    "Energy Shake",
+    "Protein Bar",
+    "TOUGH Bar",
+    "Protein Shake",
+    "ULTRA Shake",
+    "Energy Bar"
+}
+local function vu495(p489)
+    local v490, v491, v492 = p489:gmatch("%S+")
+    local v493 = {}
+    while true do
+        v492 = v490(v491, v492)
+        if v492 == nil then
+            break
+        end
+        table.insert(v493, v492:lower())
+    end
+    for v494 = 2, # v493 do
+        v493[v494] = v493[v494]:sub(1, 1):upper() .. v493[v494]:sub(2)
+    end
+    return table.concat(v493)
+end
+local function vu501()
+    local v496, v497, v498 = ipairs(vu488)
+    while true do
+        local v499
+        v498, v499 = v496(v497, v498)
+        if v498 == nil then
+            break
+        end
+        local v500 = vu446.Character:FindFirstChild(v499) or vu446.Backpack:FindFirstChild(v499)
+        if v500 then
+            vu447:FireServer(vu495(v499), v500)
+        end
+    end
+end
+local vu502 = false
+task.spawn(function()
+    while true do
+        while vu502 do
+            vu501()
+            task.wait(0.1)
+        end
+        task.wait(0.5)
+    end
+end)
+v425:AddSwitch("Eat Everything", function(p503)
+    vu502 = p503
+    if p503 then
+        vu501()
+    end
+end):Set(false)
+local v504 = v1:AddTab("Stats")
+v504:Show()
+v504:AddLabel("Had to remove becuase the script was not executing -- Darkness").TextSize = 20
+
+v504:AddLabel("")
+
+v504:AddLabel("Script Made by darkness -- Discord: mitchgot").TextSize = 20
